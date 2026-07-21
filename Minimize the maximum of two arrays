@@ -1,0 +1,19 @@
+import math
+class Solution:
+    def minimizeSet(self, divisor1: int, divisor2: int, uniqueCnt1: int, uniqueCnt2: int) -> int:
+        lcm = math.lcm(divisor1, divisor2)
+        low = 1
+        high = 2 * 10**9 
+        ans = high
+        while low <= high:
+            mid = (low + high) // 2
+            not_div1 = mid - (mid // divisor1)
+            not_div2 = mid - (mid // divisor2)
+            not_both = mid - (mid // lcm)
+            if not_div1 >= uniqueCnt1 and not_div2 >= uniqueCnt2 and not_both >= (uniqueCnt1 + uniqueCnt2):
+                ans = mid 
+                high = mid - 1
+            else:
+                low = mid + 1 
+                
+        return ans
