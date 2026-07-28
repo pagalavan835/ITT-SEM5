@@ -1,0 +1,59 @@
+class Solution {
+    public int[] maxNumber(int[] nums1, int[] nums2, int k) {
+        int m = nums1.length;
+        int n = nums2.length;
+        int[] maxResult = new int[k];
+        int start = Math.max(0, k - n);
+        int end = Math.min(k, m);
+        
+        for (int i = start; i <= end; i++) {
+            int[] sub1 = maxArray(nums1, i);
+            int[] sub2 = maxArray(nums2, k - i);
+            int[] merged = merge(sub1, sub2, k);
+            if (isGreater(merged, 0, maxResult, 0)) {
+                maxResult = merged;
+            }
+        }
+        return maxResult;
+    }
+    private int[] maxArray(int[] nums, int len) {
+        int n = nums.length;
+        int[] result = new int[len];
+        int top = 0;
+        int dropCount = n - len;
+        for (int num : nums) {
+            while (top > 0 && result[top - 1] < num && dropCount > 0) {
+                top--;
+                dropCount--;
+            }
+            if (top < len) {
+                result[top++] = num;
+            } else {
+                dropCount--; 
+            }
+        }
+        return result;
+    }
+    private int[] merge(int[] sub1, int[] sub2, int k) {
+        int[] result = new int[k];
+        int ptr1 = 0, ptr2 = 0;
+        
+        for (int i = 0; i < k; i++) {
+            if (isGreater(sub1, ptr1, sub2, ptr2)) {
+                result[i] = sub1[ptr1++];
+            } else {
+                result[i] = sub2[ptr2++];
+            }
+        }
+        return result;
+    }
+    private boolean isGreater(int[] nums1, int p1, int[] nums2, int p2) {
+        while (p1 < nums1.length && p2 < nums2.length) {
+            if (nums1[p1] > nums2[p2]) return true;
+            if (nums1[p1] < nums2[p2]) return false;
+            p1++;
+            p2++;
+        }
+        return p1 < nums1.length;
+    }
+}
