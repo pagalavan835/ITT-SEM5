@@ -1,0 +1,24 @@
+class Solution {
+    private record SubtreeInfo(boolean isBST, int mx, int mn, int sum) {}
+    private int maxBstSum = 0;
+    public int maxSumBST(TreeNode root) {
+        traverse(root);
+        return maxBstSum;
+    }
+    private SubtreeInfo traverse(TreeNode root) {
+        if (root == null) {
+            return new SubtreeInfo(true, Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
+        }
+        SubtreeInfo left = traverse(root.left);
+        SubtreeInfo right = traverse(root.right);
+        if (!left.isBST || !right.isBST || root.val <= left.mx || root.val >= right.mn) {
+            return new SubtreeInfo(false, 0, 0, 0);
+        }
+        int currentSum = root.val + left.sum + right.sum;
+        maxBstSum = Math.max(maxBstSum, currentSum);
+        int overallMax = Math.max(root.val, right.mx);
+        int overallMin = Math.min(root.val, left.mn);
+        return new SubtreeInfo(true, overallMax, overallMin, currentSum);
+    }
+}
+
