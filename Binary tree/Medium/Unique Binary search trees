@@ -1,0 +1,57 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public List<TreeNode> generateTrees(int n) {
+        if (n == 0) return new ArrayList<>();
+        return buildTree(1, n, new HashMap<>());
+    }
+    
+    private List<TreeNode> buildTree(int start, int end, Map<String, List<TreeNode>> memo) {
+        List<TreeNode> allTrees = new ArrayList<>();
+        
+        // Base case: if start > end, return a list with null to represent empty child
+        if (start > end) {
+            allTrees.add(null);
+            return allTrees;
+        }
+        
+        String key = start + "-" + end;
+        if (memo.containsKey(key)) {
+            return memo.get(key);
+        }
+        
+        // Iterate through all values to use as root
+        for (int i = start; i <= end; i++) {
+            // Generate all left subtrees
+            List<TreeNode> leftSubtrees = buildTree(start, i - 1, memo);
+            // Generate all right subtrees
+            List<TreeNode> rightSubtrees = buildTree(i + 1, end, memo);
+            
+            // Connect left and right subtrees to the root `i`
+            for (TreeNode left : leftSubtrees) {
+                for (TreeNode right : rightSubtrees) {
+                    TreeNode root = new TreeNode(i);
+                    root.left = left;
+                    root.right = right;
+                    allTrees.add(root);
+                }
+            }
+        }
+        
+        memo.put(key, allTrees);
+        return allTrees;
+    }
+}
