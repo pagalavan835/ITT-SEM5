@@ -1,0 +1,30 @@
+import java.util.HashSet;
+import java.util.Set;
+
+public class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        // Base case: if the string is empty, the length is 0
+        if (s == null || s.length() == 0) {
+            return 0;
+        }
+
+        Set<Character> set = new HashSet<>();
+        int maxLength = 0;
+        int left = 0;
+
+        // sliding window: expand the window using the 'right' pointer
+        for (int right = 0; right < s.length(); right++) {
+            // If a duplicate is found, shrink the window from the left
+            while (set.contains(s.charAt(right))) {
+                set.remove(s.charAt(left));
+                left++;
+            }
+            
+            // Add the current character and update the maximum length
+            set.add(s.charAt(right));
+            maxLength = Math.max(maxLength, right - left + 1);
+        }
+
+        return maxLength;
+    }
+}
